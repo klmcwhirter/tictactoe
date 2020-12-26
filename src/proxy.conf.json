@@ -1,0 +1,7 @@
+{
+    "/api/pytttapi": {
+        "target": "http://localhost:8080/function/pytttapi",
+        "secure": false,
+        "logLevel": "debug"
+    }
+}
