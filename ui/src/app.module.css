@@ -1,0 +1,41 @@
+.app {
+  text-align: center;
+}
+
+.header {
+  text-align: initial;
+  background-color: lightgray;
+  margin-top: 0rem;
+}
+
+.header h1 {
+  display: inline-block;
+  margin-left: 1rem;
+}
+
+.header h2 {
+  display: inline-block;
+  margin-left: 2em;
+}
+
+.header h2>button {
+  font-size: larger;
+}
+
+.header button {
+  margin-left: 1rem;
+}
+
+.dashboard {
+  display: grid;
+}
+
+.dashboard table, .dashboard table>tr>td {
+  border-collapse: collapse;
+}
+
+.game {
+  margin-top: 2rem;
+  margin-left: 5rem;
+  margin-right: 5rem;
+}
