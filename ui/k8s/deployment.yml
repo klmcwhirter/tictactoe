@@ -1,0 +1,90 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tictactoe-pi1
+  namespace: tictactoe
+  labels:
+    app: tictactoe
+spec:
+  selector:
+    matchLabels:
+      app: tictactoe
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: tictactoe
+    spec:
+      containers:
+        - name: tictactoe
+          image: nginx:alpine
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: tictactoe-artifacts-volume
+              mountPath: /usr/share/nginx/html
+            - name: tictactoe-nginx-config-volume
+              mountPath: /etc/nginx
+      nodeSelector:
+        kubernetes.io/hostname: pi1
+      volumes:
+        - name: tictactoe-artifacts-volume
+          configMap:
+            name: tictactoe-artifacts
+        - name: tictactoe-nginx-config-volume
+          configMap:
+            name: tictactoe-nginx-config
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tictactoe-pi2
+  namespace: tictactoe
+  labels:
+    app: tictactoe
+spec:
+  selector:
+    matchLabels:
+      app: tictactoe
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: tictactoe
+    spec:
+      containers:
+        - name: tictactoe
+          image: nginx:alpine
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: tictactoe-artifacts-volume
+              mountPath: /usr/share/nginx/html
+            - name: tictactoe-nginx-config-volume
+              mountPath: /etc/nginx
+      nodeSelector:
+        kubernetes.io/hostname: pi2
+      volumes:
+        - name: tictactoe-artifacts-volume
+          configMap:
+            name: tictactoe-artifacts
+        - name: tictactoe-nginx-config-volume
+          configMap:
+            name: tictactoe-nginx-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tictactoe-service
+  namespace: tictactoe
+spec:
+  selector:
+    app: tictactoe
+  ports:
+    - protocol: TCP
+      port: 80
