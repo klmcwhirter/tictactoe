@@ -1,0 +1,12 @@
+version: 1.0
+provider:
+  name: openfaas
+  gateway: http://192.168.1.50:31112
+functions:
+  pytttapi:
+    lang: python3-http
+    handler: ./tictactoe
+    image: klmcwhirter/tictactoe:arm32v7
+    build_args:
+      TEST_ENABLED: false
+      TEST_COMMAND: pytest
