@@ -88,11 +88,3 @@ def test_set_moves_creates_moves_from_vector(tie_vector):
 
     for i in range(9):
         assert (tie_vector[i], i) == game.moves[i]
-
-
-def test_to_json_serializes_game():
-    """as stated"""
-    game = Game()
-    jsonstr = game.to_json()
-
-    assert '{"winner": null, "moves": []}' == jsonstr

@@ -1,17 +1,5 @@
 """Definitions of the game"""
 import json
-from json import JSONEncoder
-
-
-class GameJSONEncoder(JSONEncoder):
-
-    def default(self, object):
-        if isinstance(object, Game):
-            return object.__dict__
-        else:
-            # call base class implementation which takes care of
-            # raising exceptions for unsupported types
-            return json.JSONEncoder.default(self, object)
 
 
 def get_game(req):
@@ -68,6 +56,3 @@ class Game(object):
     def set_moves(self, vector):
         """set moves from a players vector"""
         self.moves = [(vector[i], i) for i in range(9)]
-
-    def to_json(self):
-        return json.dumps(self, cls=GameJSONEncoder)

@@ -1,6 +1,6 @@
 """Tic Tac Toe game commands"""
 import json
-from .game import Game, GameJSONEncoder
+from .game import Game
 
 
 class TicTacToeCommand(object):
@@ -31,7 +31,7 @@ class TicTacToeCommand(object):
         """
         resp = self.oper()
 
-        return resp  # json.dumps(resp, cls=GameJSONEncoder)
+        return resp
 
 
 class TicTacToeMoveCommand(TicTacToeCommand):
@@ -52,7 +52,7 @@ class TicTacToeMoveCommand(TicTacToeCommand):
         return {
             'statusCode': 200,
             'body': {
-                'game': self.game.to_json()
+                'game': self.game.__dict__
             }
         }
 
@@ -72,7 +72,7 @@ class TicTacToeResetCommand(TicTacToeCommand):
         return {
             'statusCode': 200,
             'body': {
-                'game': self.game.to_json()
+                'game': self.game.__dict__
             }
         }
 
