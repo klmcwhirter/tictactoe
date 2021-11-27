@@ -1,11 +1,5 @@
 """Test the tictactoe module"""
-import json
-
-from .tictactoe import (
-    TicTacToeCommand,
-    TicTacToeMoveCommand,
-    get_command
-)
+from .tictactoe import TicTacToeCommand, TicTacToeMoveCommand, get_command
 
 
 def test_TicTacToeCommand_can_construct():
@@ -43,14 +37,7 @@ def test_TicTacToeCommand_provides_str():
 def test_TicTacToeCommand_default_oper_returns_404():
     """as stated"""
     obj = TicTacToeCommand({})
-    assert 404 == obj.oper()['status']
-
-
-def test_TicTacToeCommand_run_returns_oper_result_as_json():
-    """as stated"""
-    obj = TicTacToeCommand({})
-    jsonstr = obj.run()
-    assert '{"status": 404}' == jsonstr
+    assert 404 == obj.oper()['statusCode']
 
 
 def test_TicTacToeMoveCommand_can_construct():
@@ -66,17 +53,14 @@ def test_TicTacToeMoveCommand_oper_name_is_move():
     assert 'move' == obj.oper_name
 
 
-def test_TicTacToeMoveCommand_run_returns_oper_result_as_json():
+def test_TicTacToeMoveCommand_run_returns_oper_returns_200():
     """as stated"""
     obj = TicTacToeMoveCommand({'uid': 0, 'player': 0, 'location': 0})
-    jsonstr = obj.run()
+    assert 200 == obj.oper()['statusCode']
 
-    assert jsonstr.startswith('{"status": 200, "game": ')
+    jobj = obj.run()
 
-    jobj = json.loads(jsonstr)
-    # needed because of how the JSON encoder works
-    jobj['game']['moves'] = [(m[0], m[1]) for m in jobj['game']['moves']]
-    assert jobj['game'] == obj.game.__dict__
+    assert 200 == jobj['statusCode']
 
 
 def test_get_command_gets_TicTacToeCommand_if_unknown_oper():

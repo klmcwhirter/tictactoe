@@ -24,7 +24,7 @@ class TicTacToeRequestType {
 async function fetchTicTacToe(type: TicTacToeRequestType): Promise<TicTacToeResponse> {
     const body = JSON.stringify(type);
     // console.log('fetchTicTacToe: body=', body);
-    const rc = (await fetch("/tictactoe/api/pytttapi", {
+    const rc = (await fetch("/tictactoe/api/tictactoe", {
         method: "PUT",
         mode: "cors",
         headers: {

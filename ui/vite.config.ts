@@ -14,8 +14,8 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/tictactoe/api/pytttapi': {
-        target: 'http://localhost:8080/function/pytttapi',
+      '/tictactoe/api/tictactoe': {
+        target: 'http://localhost:8080/function/tictactoe',
         changeOrigin: true,
         secure: false,
         ws: true,

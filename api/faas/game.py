@@ -1,5 +1,4 @@
 """Definitions of the game"""
-import json
 
 
 def get_game(req):
