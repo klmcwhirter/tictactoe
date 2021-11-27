@@ -21,7 +21,7 @@ class TicTacToeCommand(object):
 
     def oper(self):
         """Implement the command."""
-        return {'status': 404}
+        return {'statusCode': 404}
 
     def run(self) -> str:
         """Run the command.
@@ -31,7 +31,7 @@ class TicTacToeCommand(object):
         """
         resp = self.oper()
 
-        return json.dumps(resp, cls=GameJSONEncoder)
+        return resp  # json.dumps(resp, cls=GameJSONEncoder)
 
 
 class TicTacToeMoveCommand(TicTacToeCommand):
@@ -50,8 +50,10 @@ class TicTacToeMoveCommand(TicTacToeCommand):
         """Implement the command."""
         self.game.move(self.player, self.location)
         return {
-            'status': 200,
-            'game': self.game
+            'statusCode': 200,
+            'body': {
+                'game': self.game.to_json()
+            }
         }
 
 
@@ -68,8 +70,10 @@ class TicTacToeResetCommand(TicTacToeCommand):
     def oper(self, *args):
         """Implement the command."""
         return {
-            'status': 200,
-            'game': self.game
+            'statusCode': 200,
+            'body': {
+                'game': self.game.to_json()
+            }
         }
 
 
