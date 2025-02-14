@@ -1,0 +1,11 @@
+services:
+  ui:
+    build:
+      context: ./ui
+      dockerfile: Containerfile
+    environment:
+      EXPOSED_UI_PORT: 9000
+      TZ: PST8PDT
+    ports:
+      - 9000:80
+    restart: unless-stopped

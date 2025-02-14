@@ -1,112 +1,114 @@
-import { createContext, createMemo, createResource, createSignal, useContext } from "solid-js";
+import { createContext, createMemo, createSignal, useContext } from "solid-js";
+import { Move, WaysToWin } from "./models";
 
-const appContext = createContext();
 
-export interface TicTacToeGameModel {
-    winner?: number;
-    moves: number[][]
-}
-
-export interface TicTacToeResponse {
-    status: string;
-    game: TicTacToeGameModel;
-}
-
-class TicTacToeRequestType {
-    constructor(
-        public oper_name: string,
-        public player?: number,
-        public location?: number,
-        public game?: TicTacToeGameModel
-    ) { }
-}
-
-async function fetchTicTacToe(type: TicTacToeRequestType): Promise<TicTacToeResponse> {
-    const body = JSON.stringify(type);
-    // console.log('fetchTicTacToe: body=', body);
-    const rc = (await fetch("/tictactoe/api/tictactoe", {
-        method: "PUT",
-        mode: "cors",
-        headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-        },
-        body: body
-    })).json();
-
-    return rc;
-}
-
-let player = 0;
 const players = ['X', 'O', 'Tie'];
 
-function addMove(prev: string[], ttt?: TicTacToeResponse): string[] {
-    let curr = [...prev];
-
-    // console.log('addMove', prev, ttt, player);
-
-    if (ttt && ttt.game.moves.length) {
-        const lastMove = ttt.game.moves[ttt.game.moves.length - 1];
-        curr[lastMove[1]] = players[lastMove[0]];
-        player = 1 - player; // update current player
-    }
-    else {
-        curr = Array.from(Array(9)).map((c, i) => '');
-        player = 0;
-    }
-
-    // console.log('addMove: curr', curr, ttt, player);
-
-    return curr;
+function initialCells(): (string | null)[] {
+    return [null, null, null, null, null, null, null, null, null];
 }
+
+let gameWinner: number | undefined;
 
 function updateWins(wins: number[], winner?: number): number[] {
     if (winner != null) {
         wins[winner]++;
     }
-    // console.log('updateWins', winner, wins);
+    console.log('updateWins', winner, wins);
     return [...wins];
 }
 
+const appContext = createContext();
+
 export function AppContextProvider(props) {
+    const [player, setPlayer] = createSignal<number>(0);
+    const [moves, setMoves] = createSignal<Move[]>([]);
+    const [cells, setCells] = createSignal<(string | null)[]>(initialCells());
+    const isComplete = createMemo<boolean>(() => {
+        // console.log('isComplete')
+        const _cells = cells();
+        for (let w2w of WaysToWin) {
+            const val = _cells[w2w[0]];
+            if (val !== null && w2w.every((i: number) => _cells[i] === val)) {
+                console.log('isComplete: winner detected=', val);
+                gameWinner = players.indexOf(val);
+                return true;
+            }
+        }
+        if (moves().length >= 9) {
+            console.log('isComplete: tie detected=', moves().length);
+
+            gameWinner = 2;  // tie
+            return true;
+        }
+        // console.log('isComplete: no winner detected');
+        return false;
+    });
     const [wins, setWins] = createSignal([0, 0, 0]);
-    const [type, setType] = createSignal(new TicTacToeRequestType("reset"));
-    const [tictactoe] = createResource(type, fetchTicTacToe);
-    const cells = createMemo((prev) => addMove(prev, tictactoe()), [] as string[]);
     const winner = createMemo(() => {
         let rc = '';
-        // console.log('winner: ttt:', tictactoe());
-        if (tictactoe() && tictactoe()?.game.winner != null) {
+
+        if (isComplete() && gameWinner !== undefined) {
             // console.log('winner: have a winner');
-            const idx = tictactoe()?.game.winner || 0;
-            setWins((prevWins) => updateWins(prevWins, tictactoe()?.game.winner));
-            rc = idx < 2 ? `Winner: ${players[idx]}` : 'Tie!';
+            // console.log('winner: gameWinner=', gameWinner);
+            setWins((prevWins) => updateWins(prevWins, gameWinner));
+            rc = gameWinner < 2 ? `Winner: ${players[gameWinner]}` : 'Tie!';
         }
         // else {
         //     console.log('winner: do not have a winner');
         // }
-        // console.log('winner', rc);
+        // console.log('winner: rc=', rc);
+
         return rc;
     });
-    const store = {
-        cells,
-        tictactoe,
-        winner,
-        wins,
-        'move': (location: number, game: TicTacToeGameModel) => {
-            // console.log(`move: player=${player}, location=${location}, game: `, game);
-            setType(t => new TicTacToeRequestType("move", player, location, game));
-        },
-        'reset': () => {
-            setType(t => new TicTacToeRequestType("reset"));
-        },
-        'resetWins': () => {
-            setWins(w => [0, 0, 0]);
+
+    function _cellsFrom(moves: Move[]) {
+        const _cells = initialCells();
+        for (let m of moves) {
+            _cells[m.cell] = players[m.player];
         }
+        // console.log('cellsFrom: _cells=', _cells);
+        return _cells;
+    }
+
+    function move(cell: number) {
+        console.log(`move: player=${player()}, cell=${cell}`);
+
+        if (!isComplete()) {
+            const _moves = moves();
+            _moves.push(new Move(player(), cell));
+            setMoves([..._moves]);
+            setCells(() => _cellsFrom(_moves));
+            setPlayer(1 - player());
+        }
+    }
+
+    function reset() {
+        console.log('reset');
+        setPlayer(0);
+        setCells(initialCells());
+        setMoves([]);
+        gameWinner = undefined;
+    }
+
+    function resetWins() {
+        console.log('resetWins');
+        setWins([0, 0, 0]);
+    }
+
+    const gameModel = {
+        move,
+        reset,
+        resetWins,
+
+        moves,
+        cells,
+        winner,
+        wins
     };
 
     return (
-        <appContext.Provider value={store}>
+        <appContext.Provider value={gameModel}>
             {props.children}
         </appContext.Provider>
     );

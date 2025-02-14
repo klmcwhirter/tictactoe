@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@layer utilities {
+   .btn {
+        @apply p-2 h-min w-min font-medium text-xl rounded-lg shadow-md
+    }
+
+    .btn-gray {
+        @apply text-black bg-gray-300 hover:bg-purple-700 hover:text-white
+    }
+}

@@ -1,0 +1,68 @@
+{
+    "name": "tictactoe",
+    "image": "fedora41-python-dx:latest",
+    "runArgs": [
+        "--name",
+        "pi-day-2025-with-py"
+    ],
+    "containerEnv": {
+        "HOME": "/var/home/klmcw",
+        "TZ": "PST8PDT",
+        "USER": "klmcw"
+    },
+    "mounts": [
+        {
+            "source": "/var/home/klmcw",
+            "target": "/var/home/klmcw",
+            "type": "bind"
+        }
+    ],
+    "features": {},
+    // Use 'forwardPorts' to make a list of ports inside the container available locally.                                                                                                 
+    "forwardPorts": [
+        "9000:80"
+    ],
+    "onCreateCommand": {
+        "start time": "date",
+        "install pnpm": ".devcontainer/vsc-install-pnpm.sh"
+    },
+    // Use 'postCreateCommand' to run commands after the container is created.                                                                                                            
+    "postCreateCommand": {
+        "pwd": "pwd",
+        "uname": "uname -a",
+        "node version": "node --version",
+        "pnpm version": "pnpm --version"
+    },
+    // Use 'postStartCommand' to run commands after the container is created.                                                                                                             
+    "postStartCommand": {
+        // ".devcontainer/vsc-build-ui.sh",
+        "end time": "date"
+    },
+    // Configure tool-specific properties.                                                                                                                                                
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "dbaeumer.vscode-eslint",
+                "streetsidesoftware.code-spell-checker",
+                "bradlc.vscode-tailwindcss",
+                "redhat.vscode-yaml"
+            ],
+            "settings": {
+                "[tailwindcss]": {
+                    "editor.quickSuggestions": {
+                        "strings": "on"
+                    }
+                },
+                "files.associations": {
+                    "*.css": "tailwindcss"
+                },
+                "redhat.telemetry.enabled": false,
+                "terminal.integrated.defaultProfile.linux": "bash"
+            }
+        }
+    },
+    "remoteEnv": {
+        "HOSTNAME": "tictactoe"
+    },
+    "remoteUser": "klmcw"
+}

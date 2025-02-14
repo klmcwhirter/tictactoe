@@ -1,4 +1,3 @@
-import "virtual:windi.css";
 
 import { render } from "solid-js/web";
 
