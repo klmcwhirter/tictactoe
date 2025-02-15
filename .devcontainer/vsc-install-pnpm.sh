@@ -8,7 +8,6 @@ function echo_eval
 
 echo $0: $(pwd)
 
-echo_eval cd ui
 echo_eval rm -fr node_modules/
 
 npm install corepack@latest && \

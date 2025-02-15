@@ -4,8 +4,8 @@
   "description": "",
   "scripts": {
     "start": "vite",
-    "dev": "vite",
-    "build": "vite build",
+    "debug": "vite --debug --host --strictPort",
+    "build": "vite build --sourcemap true --minify false --manifest true",
     "serve": "vite preview"
   },
   "license": "MIT",

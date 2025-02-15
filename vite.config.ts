@@ -10,6 +10,9 @@ export default defineConfig({
   build: {
     assetsDir: '',
     target: "esnext",
-    polyfillDynamicImport: false,
+    // polyfillDynamicImport: false,
   },
+  server: {
+    port: 9000
+  }
 });
