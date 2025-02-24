@@ -4,11 +4,12 @@
 
 The app architecture involves the following:
 
-| Architectural Element | Link | Purpose|
+| Architectural Element | Link | Purpose |
 | --- | --- | --- |
 | docker compose | [compose.yml](../compose.yml) | Orchestrate Lifecycle |
 | nginx | [ui/Containerfile](../ui/Containerfile) | Serve app |
-| solidjs | [ui/](../ui/) | framework |
+| ui | [ui/](../ui/) | app implementation |
+| solidjs | | framework |
 | tailwindcss | | style library |
 | vite | | app build automation |
 
@@ -16,14 +17,16 @@ The app architecture involves the following:
 
 | Class | Purpose |
 | --- | --- |
-| Toolbar | app header, game related actions |
-| Board | playing surface |
 | App | app composition |
 | AppContext | game state, inter-component actions |
+| Board | playing surface |
+| Toolbar | app header, game related actions |
 
 ## Models
 
 | Concept | Purpose |
 | --- | --- |
 | WAYS_TO_WIN | list of board cell combinations that constitute a winning game |
-| GameModel | game state |
+| AppModel | app state and operations |
+| GameModel | game state and operations |
+| Move | models a player move |
